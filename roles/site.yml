@@ -1,0 +1,10 @@
+---
+- name: Configure Docker, kubectl, and Jenkins
+  hosts: all
+  become: true
+
+  roles:
+    - docker
+    - kubectl
+    - jenkins
+

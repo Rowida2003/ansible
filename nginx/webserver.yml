@@ -1,0 +1,37 @@
+---
+- name: Configure Nginx Web Server
+  hosts: webservers
+  become: yes
+  vars_files:
+    - vars/web_vars.yml
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure Nginx is running and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Customize web page
+      copy:
+        src: files/index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Verify Nginx is serving content
+      uri:
+        url: http://localhost
+        return_content: yes
+      register: result
+
+    - name: Show web page content
+      debug:
+        msg: "{{ result.content }}"
+
